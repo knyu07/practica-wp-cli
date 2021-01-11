@@ -1,6 +1,12 @@
 #!/bin/bash
 set -x
 
+#VARIABLES
+BD_ROOT_PASSWD=root
+DB_NAME=wordpress_db
+DB_USER=wordpress_user
+DB_PASSWORD=wordpress_password
+
 # Actualizamos la lista de paquetes
 apt update
 
@@ -12,9 +18,6 @@ apt install apache2 -y
 
 # Instalamos el MySQL Server
 apt install mysql-server -y
-
-# Definimos la contraseña root de MySQL
-BD_ROOT_PASSWD=root
 
 # Actualizamos la contraseña de root de MySQL
 mysql -u root <<< "ALTER USER 'root'@'localhost' IDENTIFIED WITH caching_sha2_password BY '$BD_ROOT_PASSWD';"
@@ -36,3 +39,19 @@ mv wp-cli.phar /usr/local/bin/wp
 
 #Nos situamos en el directorio donde vamos a realizar la instalación.
 cd /var/www/html
+
+#Descargamos el código fuente de Wordpress
+wp core download --locale=es_ES --allow-root
+
+#Creamos la base de datos
+mysql -u root <<< "DROP DATABASE IF EXISTS $DB_NAME;"
+mysql -u root <<< "CREATE DATABASE $DB_NAME;"
+mysql -u root <<< "CREATE USER $DB_USER@'localhost' IDENTIFIED BY '$DB_PASSWORD';"
+mysql -u root <<< "GRANT ALL PRIVILEGES ON $DB_NAME.* TO $DB_USER@'localhost';"
+mysql -u root <<< "FLUSH PRIVILEGES;"
+
+#Creamos el archivo de configuración
+wp config create --dbname=$DB_NAME --dbuser=$DB_USER --dbpass=DB_PASSWORD
+
+#Instalamos Wordpress
+wp core install --url=localhost --title="IAW" --admin_user=admin --admin_password=admin --admin_email=admin@admin.com
