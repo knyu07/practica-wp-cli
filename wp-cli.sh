@@ -19,10 +19,6 @@ apt install apache2 -y
 # Instalamos el MySQL Server
 apt install mysql-server -y
 
-# Actualizamos la contraseña de root de MySQL
-mysql -u root <<< "ALTER USER 'root'@'localhost' IDENTIFIED WITH caching_sha2_password BY '$BD_ROOT_PASSWD';"
-mysql -u root <<< "FLUSH PRIVILEGES;"
-
 # Instalamos los módulos de PHP
 apt install php libapache2-mod-php php-mysql -y
 
@@ -51,7 +47,7 @@ mysql -u root <<< "GRANT ALL PRIVILEGES ON $DB_NAME.* TO $DB_USER@'localhost';"
 mysql -u root <<< "FLUSH PRIVILEGES;"
 
 #Creamos el archivo de configuración
-wp config create --dbname=$DB_NAME --dbuser=$DB_USER --dbpass=DB_PASSWORD
+wp config create --dbname=$DB_NAME --dbuser=$DB_USER --dbpass=DB_PASSWORD --allow-root
 
 #Instalamos Wordpress
-wp core install --url=localhost --title="IAW" --admin_user=admin --admin_password=admin --admin_email=admin@admin.com
+wp core install --url=http://54.152.35.182 --title="IAW" --admin_user=admin --admin_password=admin --admin_email=admin@admin.com --allow-root
