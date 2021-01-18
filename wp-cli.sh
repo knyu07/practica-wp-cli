@@ -47,7 +47,14 @@ mysql -u root <<< "GRANT ALL PRIVILEGES ON $DB_NAME.* TO $DB_USER@'localhost';"
 mysql -u root <<< "FLUSH PRIVILEGES;"
 
 #Creamos el archivo de configuración
-wp config create --dbname=$DB_NAME --dbuser=$DB_USER --dbpass=DB_PASSWORD --allow-root
+wp config create --dbname=$DB_NAME --dbuser=$DB_USER --dbpass=$DB_PASSWORD --allow-root
 
 #Instalamos Wordpress
-wp core install --url=http://54.152.35.182 --title="IAW" --admin_user=admin --admin_password=admin --admin_email=admin@admin.com --allow-root
+wp core install --url=http://52.90.236.45 --title="IAW" --admin_user=admin --admin_password=admin --admin_email=admin@admin.com --allow-root
+
+#Eliminamos el index.html 
+cd /var/www/html
+rm -rf index.html
+
+#Reiniciamos apache
+systemctl restart apache2.service
